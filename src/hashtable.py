@@ -46,35 +46,43 @@ class HashTable:
     def insert(self, key, value):
         '''
         Store the value with the given key.
-
         Hash collisions should be handled with Linked List Chaining.
-
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        node = self.storage[index]
+        newPair = LinkedPair(key, value)
+            
+        while node != None and node.key != key:
+            prevNode = node
+            node = prevNode.next
+            
+        if node != None:
+            node.value = value
+        else:
+            newPair.next = self.storage[index]
+            self.storage[index] = newPair
 
 
 
     def remove(self, key):
         '''
         Remove the value stored with the given key.
-
         Print a warning if the key is not found.
-
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        self.storage[index] = None
 
 
     def retrieve(self, key):
         '''
         Retrieve the value stored with the given key.
-
         Returns None if the key is not found.
-
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        return self.storage[index].value
 
 
     def resize(self):
@@ -115,3 +123,29 @@ if __name__ == "__main__":
     print(ht.retrieve("line_3"))
 
     print("")
+
+
+
+ht = HashTable(8)
+
+ht.insert("key-0", "val-0")
+ht.insert("key-1", "val-1")
+ht.insert("key-2", "val-2")
+ht.insert("key-3", "val-3")
+ht.insert("key-4", "val-4")
+ht.insert("key-5", "val-5")
+ht.insert("key-6", "val-6")
+ht.insert("key-7", "val-7")
+ht.insert("key-8", "val-8")
+ht.insert("key-9", "val-9")
+
+print(ht.retrieve("key-0"))
+print(ht.retrieve("key-1"))
+print(ht.retrieve("key-2"))
+print(ht.retrieve("key-3"))
+print(ht.retrieve("key-4"))
+print(ht.retrieve("key-5"))
+print(ht.retrieve("key-6"))
+print(ht.retrieve("key-7"))
+print(ht.retrieve("key-8"))
+print(ht.retrieve("key-9"))
