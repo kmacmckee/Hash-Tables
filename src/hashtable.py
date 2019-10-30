@@ -49,19 +49,30 @@ class HashTable:
         Hash collisions should be handled with Linked List Chaining.
         Fill this in.
         '''
-        index = self._hash_mod(key)
-        node = self.storage[index]
-        newPair = LinkedPair(key, value)
-            
-        while node != None and node.key != key:
-            prevNode = node
-            node = prevNode.next
-            
-        if node != None:
-            node.value = value
+        
+        new_node = LinkedPair(key, value)
+        hash_key = self._hash_mod(key)
+        head = self.storage[hash_key]
+        node = head
+
+        if head == None:
+            self.storage[hash_key] = new_node
         else:
-            newPair.next = self.storage[index]
-            self.storage[index] = newPair
+            if head.key == key:
+                new_node.next = head.next
+                self.storage[hash_key] = new_node
+            else:
+                while node:
+                    if node.next == None:
+                        node.next = new_node
+                        break
+
+                    elif node.next.key == key:
+                        new_node.next = node.next.next
+                        node.next = new_node
+                        break
+                    else: 
+                        node = node.next
 
 
 
@@ -71,8 +82,28 @@ class HashTable:
         Print a warning if the key is not found.
         Fill this in.
         '''
-        index = self._hash_mod(key)
-        self.storage[index] = None
+        hash_key = self._hash_mod(key)
+        if self.storage[hash_key]:
+            node = self.storage[hash_key]
+            count = 0
+            while node:
+                if count == 0:
+                    count += 1
+
+                    if node.key == key:
+                        self.storage[hash_key] = node.next
+                        break
+
+                elif count > 0:
+                    if node.next:
+                        if node.next.key == key:
+                            node.next = node.next.next
+                            break
+                        else:
+                            node = node.next
+                    else:
+                        return
+            return
 
 
     def retrieve(self, key):
@@ -81,8 +112,15 @@ class HashTable:
         Returns None if the key is not found.
         Fill this in.
         '''
-        index = self._hash_mod(key)
-        return self.storage[index].value
+        hash_key = self._hash_mod(key)
+        if self.storage[hash_key]:
+            node = self.storage[hash_key]
+            while node:
+                if node.key == key:
+                    return node.value
+                else:
+                    node = node.next
+        return None
 
 
     def resize(self):
@@ -92,7 +130,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity = self.capacity * 2
+        new_ht = HashTable(self.capacity)
+        for node in self.storage:
+            while node:
+                new_ht.insert(node.key, node.value)
+                node = node.next
+        self.storage = new_ht.storage
 
 
 
